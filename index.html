@@ -659,11 +659,7 @@
                     const translation = translations[lang][key];
 
                     if (translation) {
-                        if (el.tagName === 'H1' || el.tagName === 'P' || el.tagName === 'DIV' || el.tagName === 'SPAN') {
-                            el.innerHTML = translation;
-                        } else {
-                            el.innerText = translation;
-                        }
+                        el.innerHTML = translation;
                         el.style.opacity = '1';
                     }
                 });
