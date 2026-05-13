@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORPO 360° | Heleno Carneiro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-black: #0a0a0a;
+            --charcoal: #121212;
+            --olive-accent: #556b2f;
+            --off-white: #e5e5e5;
+            --yellow-ball: #ffff00;
+        }
+        body {
+            background-color: var(--deep-black);
+            color: var(--off-white);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            cursor: none;
+        }
+        .olive-text { color: var(--olive-accent); }
+        .olive-line { background-color: var(--olive-accent); }
+
+        /* Language Switcher Styles */
+        .lang-switcher {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 10000;
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.2em;
+        }
+        .lang-option {
+            cursor: none;
+            color: var(--off-white);
+            opacity: 0.4;
+            transition: all 0.3s ease;
+            padding: 4px 0;
+            position: relative;
+        }
+        .lang-option:hover, .lang-option.active {
+            opacity: 1;
+            color: var(--yellow-ball);
+        }
+        .lang-option.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--yellow-ball);
+        }
+
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            background-color: var(--yellow-ball);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease-out;
+            mix-blend-mode: difference;
+        }
+        .bg-particle {
+            position: fixed;
+            background-color: var(--yellow-ball);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+            filter: blur(2px);
+        }
+
+        /* Video Monumental Styles */
+        .video-section {
+            padding: 100px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .play-button {
+            width: 90px;
+            height: 90px;
+            background-color: var(--yellow-ball);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            animation: play-pulse 2s infinite;
+        }
+        .play-button svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--deep-black);
+            margin-left: 5px;
+        }
+        .play-button:hover {
+            transform: scale(1.1);
+        }
+        @keyframes play-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 0, 0.7); }
+            70% { box-shadow: 0 0 0 25px rgba(255, 255, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 0, 0); }
+        }
+        .video-hint {
+            margin-top: 24px;
+            color: var(--off-white);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.7rem;
+            opacity: 0.6;
+            font-weight: 600;
+        }
+
+        .image-hero-container {
+            position: relative;
+            width: 100%;
+            height: 95vh;
+            overflow: hidden;
+        }
+        .image-hero {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        }
+        .manifesto-block {
+            padding: 0 2rem;
+            max-width: 1200px;
+            margin: -10vh auto 0;
+            position: relative;
+            z-index: 10;
+        }
+        .section-divider {
+            height: 1px;
+            width: 100%;
+            background-color: var(--olive-accent);
+            opacity: 0.3;
+            margin: 4rem 0;
+        }
+        .text-monumental {
+            font-size: clamp(5rem, 15vw, 12rem);
+            line-height: 0.85;
+            will-change: transform;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10% { transform: scale(1.03); }
+            20% { transform: scale(1); }
+            30% { transform: scale(1.06); }
+            40% { transform: scale(1); }
+        }
+
+        .animate-heartbeat {
+            animation: heartbeat 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        .cursor-hover {
+            transform: scale(2.5) !important;
+            background-color: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .gallery-container {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-auto-rows: 200px;
+            grid-auto-flow: dense;
+            gap: 2rem;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            background-color: #1a1a1a;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: none;
+            opacity: 0.8;
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            filter: grayscale(30%);
+        }
+        .gallery-item:hover {
+            opacity: 1;
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+        /* Modular Sizes for Dense Grid */
+        .img-large { grid-column: span 2; grid-row: span 2; }
+        .img-tall { grid-row: span 2; }
+        .img-wide { grid-column: span 2; }
+        .img-standard { grid-column: span 1; grid-row: span 1; }
+    </style>
+</head>
+<body>
+    <!-- Language Switcher -->
+    <div class="lang-switcher">
+        <span class="lang-option active" onclick="changeLanguage('pt')" id="lang-pt">PT</span>
+        <span class="lang-option" onclick="changeLanguage('en')" id="lang-en">EN</span>
+        <span class="lang-option" onclick="changeLanguage('es')" id="lang-es">ES</span>
+    </div>
+    <div class="custom-cursor" id="cursor"></div>
+    <div id="particles-container"></div>
+
+    <!-- HERO SECTION -->
+    <section class="relative">
+        <div class="image-hero-container">
+            <img src="Referencias/IMG_0104.jpg" class="image-hero" alt="CORPO 360 Protagonista">
+        </div>
+
+        <div class="absolute top-12 left-12 z-20">
+            <div data-i18n="hero_subtitle" class="text-sm uppercase tracking-[0.4em] olive-text mb-4 font-bold">Metodologia de movimento</div>
+            <h1 data-i18n="hero_title" class="text-monumental animate-heartbeat font-extrabold tracking-tighter leading-none">CORPO<br>360°</h1>
+        </div>
+    </section>
+
+    <!-- MANIFESTO SECTION -->
+    <section class="manifesto-block mb-48">
+        <div class="max-w-4xl">
+            <div class="h-px olive-line w-24 mb-16"></div>
+
+            <div class="space-y-12 text-xl md:text-3xl leading-relaxed font-light">
+                <p data-i18n="manifesto_p1" class="font-bold text-2xl md:text-4xl uppercase tracking-tight">
+                    O CORPO 360° é uma metodologia em desenvolvimento criada por um homem trans. Isso não é detalhe — é o ponto de partida.
+                </p>
+
+                <p data-i18n="manifesto_p2">
+                    A técnica aqui não funciona como punição. O esforço é real, mas é aproveitado, não desperdiçado. O corpo não luta contra a gravidade: <span class="font-extrabold uppercase">negocia com ela</span>. Não domina o chão: <span class="font-extrabold uppercase">entra em relação com ele</span>. Estar no chão ou de pé são expressões da mesma unidade, não há hierarquia entre os níveis.
+                </p>
+
+                <p data-i18n="manifesto_p3">
+                    A criação começa de fora. Do espaço que não é vazio. Do outro que não é obstáculo. Do objeto que não é acessório. Do jogo que não julga. Antes de olhar para dentro, o CORPO 360° propõe olhar para fora e descobrir que a consciência de si nasce do contato com o que não é você.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
+                    <p data-i18n="manifesto_highlight_1" class="text-2xl md:text-4xl font-extrabold uppercase leading-none tracking-tighter">
+                        A instabilidade não é corrigida. <br><span class="olive-text">É HABITADA.</span>
+                    </p>
+                    <p data-i18n="manifesto_highlight_2" class="text-2xl md:text-4xl font-extrabold uppercase leading-none tracking-tighter">
+                        O parceiro não é suporte. <br><span class="olive-text">É MATÉRIA VIVA.</span>
+                    </p>
+                </div>
+
+                <p data-i18n="manifesto_highlight_3" class="text-2xl md:text-4xl font-extrabold uppercase leading-none tracking-tighter">
+                    O espaço não é vazio. <span class="olive-text">É SUPERFÍCIE de CONTATO.</span>
+                </p>
+
+                <p data-i18n="manifesto_footer" class="text-xl md:text-2xl font-bold border-l-4 olive-line pl-6 py-2">
+                    Essa inversão não é só técnica. É filosófica. E muda tudo.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT SECTION 1: O QUE É -->
+    <section class="px-8 py-20 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div class="space-y-8">
+                <div data-i18n="workshop_subtitle" class="text-sm uppercase tracking-widest olive-text font-bold">O Workshop</div>
+                <h2 data-i18n="workshop_title" class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">Movimento como estado permanente de relação.</h2>
+                <p data-i18n="workshop_text" class="text-lg opacity-80 leading-relaxed">
+                    CORPO 360° é um workshop para artistas do corpo que explora o movimento como estado permanente de relação. Através de floorwork, improvisação, partnering e ativação espacial, o corpo aprende que a instabilidade não é um problema a resolver — é o lugar onde tudo acontece. Quando tudo é matéria, quando tudo é superfície de contato, o chão e o espaço se tornam apenas outro corpo em relação.
+                </p>
+            </div>
+            <div class="relative">
+                <img src="Referencias/IMG_0111.jpg" class="w-full h-[600px] object-cover shadow-2xl" alt="CORPO 360 Prática">
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- CONTENT SECTION 2: TRAJETÓRIA -->
+    <section class="px-8 py-20 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div class="order-2 md:order-1 relative">
+                <img src="Referencias/IMG_0083.jpg" class="w-full h-[600px] object-cover shadow-2xl" alt="CORPO 360 Trajetória">
+            </div>
+            <div class="order-1 md:order-2 space-y-8">
+                <div data-i18n="trajectory_subtitle" class="text-sm uppercase tracking-widest olive-text font-bold">Trajetória & Síntese</div>
+                <h2 data-i18n="trajectory_main_title" class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">A síntese de múltiplas linguagens.</h2>
+
+                <div class="space-y-6 text-lg opacity-80 leading-relaxed">
+                    <p data-i18n="trajectory_bio_1">
+                        O workshop CORPO 360° nasce da trajetória do artista da dança Heleno Carneiro. Desde a infância, a prática da capoeira e as primeiras aulas de dança contemporânea no projeto sociocultural Quik Cidadania abriram caminhos para perceber o corpo como matéria em movimento. A formação em Teatro acrescentou à pesquisa as dimensões da expressividade e da presença performativa. O contato com o Gyrotonic aprofundou a compreensão de fluxos, espirais e alinhamentos internos. A passagem pelo Ballet Jovem Minas Gerais — onde também se formou em Ballet Clássico — trouxe versatilidade técnica.
+                    </p>
+                    <p data-i18n="trajectory_bio_2">
+                        O estudo de floorwork e da técnica Piso Movil na Colômbia, com Luisa Camacho, Xezar Garcia, Yenser Pinilla e Ingrid Londoño, expandiu a percepção do corpo e do espaço como matérias móveis. Residências em Técnicas MMS, Técnica Alexander, Contato Improvisação e Fight Monkey reforçaram a escuta ativa e os fundamentos técnicos. Na Europa, experiências com Flying Low e técnicas de chão com Helder Seabra e Amarnah Ufuoma Cleopatra, vivências com Botis Seva e Far From The Norm, e Marcos Morau na GöteborgsOperans Danskompani, além de passagens por companhias como Tanz Kassel, Theater Heidelberg e Lenka Vagnarova & Company aprofundaram a compreensão de fisicalidades diversas. Residências em Viewpoints e Método Suzuki, com Luciana Brandão e Bya Braga, abriram olhares sobre composição espacial. O trabalho com partnering — em residências com Patricia Kuypers, Franck Beaubois e Lali Ayguadé — consolidou a percepção da relação física entre corpos.
+                    </p>
+                    <p data-i18n="trajectory_summary" class="font-bold text-white">Todas essas experiências se entrelaçam no CORPO 360°.</p>
+                </div>
+
+                <div class="pt-8">
+                    <div class="flex flex-wrap gap-3">
+                        <span data-i18n="skill_capoeira" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Capoeira</span>
+                        <span data-i18n="skill_ballet" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Ballet Clássico</span>
+                        <span data-i18n="skill_piso_movil" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Piso Movil</span>
+                        <span data-i18n="skill_flying_low" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Flying Low</span>
+                        <span data-i18n="skill_contato_impro" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Contato Improvisação</span>
+                        <span data-i18n="skill_suzuki" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Método Suzuki</span>
+                        <span data-i18n="skill_gyrotonic" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Gyrotonic</span>
+                        <span data-i18n="skill_viewpoints" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Viewpoints</span>
+                        <span data-i18n="skill_alexander" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Técnica Alexander</span>
+                        <span data-i18n="skill_fight_monkey" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Fight Monkey</span>
+                        <span data-i18n="skill_partnering" class="px-4 py-2 border border-gray-700 text-xs uppercase tracking-wider opacity-80">Partnering</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARA QUEM SECTION -->
+    <section class="px-8 py-20 text-center max-w-4xl mx-auto">
+        <div data-i18n="target_subtitle" class="text-sm uppercase tracking-widest olive-text font-bold mb-6">Para quem</div>
+        <h2 data-i18n="target_text" class="text-3xl md:text-5xl font-extrabold leading-tight">
+            Para dançarinos, performers, atores, artistas — e qualquer pessoa que queira mover com mais verdade.
+        </h2>
+    </section>
+
+    <!-- GALLERY SECTION: Fragmentos do Movimento -->
+    <section class="gallery-container">
+        <div class="gallery-grid">
+            <div class="gallery-item img-large">
+                <img src="Referencias/IMG_0084.jpg" alt="Movimento 1">
+            </div>
+            <div class="gallery-item img-tall">
+                <img src="Referencias/IMG_0085.jpg" alt="Movimento 2">
+            </div>
+            <div class="gallery-item img-standard">
+                <img src="Referencias/IMG_0088.jpg" alt="Movimento 3">
+            </div>
+            <div class="gallery-item img-wide">
+                <img src="Referencias/IMG_0089.jpg" alt="Movimento 4">
+            </div>
+            <div class="gallery-item img-standard">
+                <img src="Referencias/IMG_0090.jpg" alt="Movimento 5">
+            </div>
+            <div class="gallery-item img-standard">
+                <img src="Referencias/IMG_0091.jpg" alt="Movimento 6">
+            </div>
+            <div class="gallery-item img-tall">
+                <img src="Referencias/IMG_0092.jpg" alt="Movimento 7">
+            </div>
+            <div class="gallery-item img-large">
+                <img src="Referencias/IMG_0093.jpg" alt="Movimento 8">
+            </div>
+            <div class="gallery-item img-standard">
+                <img src="Referencias/IMG_0097.jpg" alt="Movimento 9">
+            </div>
+            <div class="gallery-item img-wide">
+                <img src="Referencias/IMG_0099.jpg" alt="Movimento 10">
+            </div>
+        </div>
+    </section>
+
+    <!-- VIDEO SECTION -->
+
+    <section class="video-section">
+        <div class="text-center mb-12">
+            <h2 data-i18n="video_title" class="text-4xl md:text-6xl font-extrabold uppercase tracking-tighter mb-4">A Materialização</h2>
+            <div class="h-px olive-line w-24 mx-auto"></div>
+        </div>
+
+        <div class="video-container" id="main-video-container">
+            <div class="video-overlay" id="video-overlay" onclick="playMainVideo()">
+                <div class="play-button">
+                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <span data-i18n="video_hint" class="video-hint">Clique para ouvir e sentir o movimento</span>
+            </div>
+            <video id="main-video" preload="auto" class="w-full h-full object-cover">
+                <source src="Referencias/Poleiro Cultural.mp4" type="video/mp4">
+                <span data-i18n="video_fallback">Seu navegador não suporta vídeos.</span>
+            </video>
+        </div>
+    </section>
+
+    <!-- FOOTER / CONTACT -->
+    <footer class="px-8 py-20 bg-black text-center border-t border-gray-900">
+        <div class="h-px olive-line w-24 mx-auto mb-12"></div>
+        <h3 data-i18n="footer_title" class="text-3xl font-extrabold mb-8">Interessado no workshop?</h3>
+        <div class="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 text-xl font-medium">
+            <a href="mailto:helenocarneiro.art@gmail.com" class="olive-text hover:underline transition-all">
+                helenocarneiro.art@gmail.com
+            </a>
+            <a href="https://wa.me/5531996862968" class="olive-text hover:underline transition-all">
+                +55 31 996862968
+            </a>
+        </div>
+        <div class="mt-24 text-[10px] uppercase tracking-[0.5em] opacity-30">
+            CORPO 360° &copy; 2026
+        </div>
+    </footer>
+
+    <div class="custom-cursor" id="cursor"></div>
+    <div id="particles-container"></div>
+
+    <script>
+        // Translation System
+        const translations = {
+            pt: {
+                hero_title: 'CORPO<br>360°',
+                hero_subtitle: 'Metodologia de movimento',
+                manifesto_p1: 'O CORPO 360° é uma metodologia em desenvolvimento criada por um homem trans. Isso não é detalhe — é o ponto de partida.',
+                manifesto_p2: 'A técnica aqui não funciona como punição. O esforço é real, mas é aproveitado, não desperdiçado. O corpo não luta contra a gravidade: <span class="font-extrabold uppercase">negocia com ela</span>. Não domina o chão: <span class="font-extrabold uppercase">entra em relação com ele</span>. Estar no chão ou de pé são expressões da mesma unidade, não há hierarquia entre os níveis.',
+                manifesto_p3: 'A criação começa de fora. Do espaço que não é vazio. Do outro que não é obstáculo. Do objeto que não é acessório. Do jogo que não julga. Antes de olhar para dentro, o CORPO 360° propõe olhar para fora e descobrir que a consciência de si nasce do contato com o que não é você.',
+                manifesto_highlight_1: 'A instabilidade não é corrigida. <br><span class="olive-text">É HABITADA.</span>',
+                manifesto_highlight_2: 'O parceiro não é suporte. <br><span class="olive-text">É MATÉRIA VIVA.</span>',
+                manifesto_highlight_3: 'O espaço não é vazio. <span class="olive-text">É SUPERFÍCIE de CONTATO.</span>',
+                manifesto_footer: 'Essa inversão não é só técnica. É filosófica. E muda tudo.',
+                workshop_subtitle: 'O Workshop',
+                workshop_title: 'Movimento como estado permanente de relação.',
+                workshop_text: 'CORPO 360° é um workshop para artistas do corpo que explora o movimento como estado permanente de relação. Através de floorwork, improvisação, partnering e ativação espacial, o corpo aprende que a instabilidade não é um problema a resolver — é o lugar onde tudo acontece. Quando tudo é matéria, quando tudo é superfície de contato, o chão e o espaço se tornam apenas outro corpo em relação.',
+                trajectory_subtitle: 'Trajetória & Síntese',
+                trajectory_main_title: 'A síntese de múltiplas linguagens.',
+                trajectory_bio_1: 'O workshop CORPO 360° nasce da trajetória do artista da dança Heleno Carneiro. Desde a infância, a prática da capoeira e as primeiras aulas de dança contemporânea no projeto sociocultural Quik Cidadania abriram caminhos para perceber o corpo como matéria em movimento. A formação em Teatro acrescentou à pesquisa as dimensões da expressividade e da presença performativa. O contato com o Gyrotonic aprofundou a compreensão de fluxos, espirais e alinhamentos internos. A passagem pelo Ballet Jovem Minas Gerais — onde também se formou em Ballet Clássico — trouxe versatilidade técnica.',
+                trajectory_bio_2: 'O estudo de floorwork e da técnica Piso Movil na Colômbia, com Luisa Camacho, Xezar Garcia, Yenser Pinilla e Ingrid Londoño, expandiu a percepção do corpo e do espaço como matérias móveis. Residências em Técnicas MMS, Técnica Alexander, Contato Improvisação e Fight Monkey reforçaram a escuta ativa e os fundamentos técnicos. Na Europa, experiências com Flying Low e técnicas de chão com Helder Seabra e Amarnah Ufuoma Cleopatra, vivências com Botis Seva e Far From The Norm, e Marcos Morau na GöteborgsOperans Danskompani, além de passagens por companhias como Tanz Kassel, Theater Heidelberg e Lenka Vagnarova & Company aprofundaram a compreensão de fisicalidades diversas. Residências em Viewpoints e Método Suzuki, com Luciana Brandão e Bya Braga, abriram olhares sobre composição espacial. O trabalho com partnering — em residências com Patricia Kuypers, Franck Beaubois e Lali Ayguadé — consolidou a percepção da relação física entre corpos.',
+                trajectory_summary: 'Todas essas experiências se entrelaçam no CORPO 360°.',
+                skill_capoeira: 'Capoeira',
+                skill_ballet: 'Ballet Clássico',
+                skill_piso_movil: 'Piso Movil',
+                skill_flying_low: 'Flying Low',
+                skill_contato_impro: 'Contato Improvisação',
+                skill_suzuki: 'Método Suzuki',
+                skill_gyrotonic: 'Gyrotonic',
+                skill_viewpoints: 'Viewpoints',
+                skill_alexander: 'Técnica Alexander',
+                skill_fight_monkey: 'Fight Monkey',
+                skill_partnering: 'Partnering',
+                target_subtitle: 'Para quem',
+                target_text: 'Para dançarinos, performers, atores, artistas — e qualquer pessoa que queira mover com mais verdade.',
+                video_title: 'A Materialização',
+                video_hint: 'Clique para ouvir e sentir o movimento',
+                video_fallback: 'Seu navegador não suporta vídeos.',
+                footer_title: 'Interessado no workshop?',
+            },
+            en: {
+                hero_title: 'BODY<br>360°',
+                hero_subtitle: 'Movement Methodology',
+                manifesto_p1: 'BODY 360° is a developing methodology created by a trans man. This is not a detail — it is the starting point.',
+                manifesto_p2: 'Technique here does not function as punishment. The effort is real, but it is utilized, not wasted. The body does not fight gravity: <span class="font-extrabold uppercase">it negotiates with it</span>. It does not dominate the floor: <span class="font-extrabold uppercase">it enters into a relationship with it</span>. Being on the floor or standing are expressions of the same unity; there is no hierarchy between levels.',
+                manifesto_p3: 'Creation begins from the outside. From a space that is not empty. From the other who is not an obstacle. From the object that is not an accessory. From the game that does not judge. Before looking inward, BODY 360° proposes looking outward and discovering that self-awareness is born from contact with what is not you.',
+                manifesto_highlight_1: 'Instability is not corrected. <br><span class="olive-text">IT IS INHABITED.</span>',
+                manifesto_highlight_2: 'The partner is not support. <br><span class="olive-text">IT\'S LIVING MATTER.</span>',
+                manifesto_highlight_3: 'Space is not empty. <span class="olive-text">CONTACT SURFACE.</span>',
+                manifesto_footer: 'This inversion isn\'t just technical. It is philosophical. And it changes everything.',
+                workshop_subtitle: 'The Workshop',
+                workshop_title: 'Movement as a permanent state of relation.',
+                workshop_text: 'BODY 360° is a workshop for body artists that explores movement as a permanent state of relation. Through floorwork, improvisation, partnering, and spatial activation, the body learns that instability is not a problem to be solved — it is the place where everything happens. When everything is matter, when everything is a contact surface, the floor and space become just another body in relation.',
+                trajectory_subtitle: 'Trajectory & Synthesis',
+                trajectory_main_title: 'The synthesis of multiple languages.',
+                trajectory_bio_1: 'The BODY 360° workshop is born from the trajectory of dance artist Heleno Carneiro. Since childhood, the practice of capoeira and the first contemporary dance classes in the Quik Cidadania sociocultural project opened paths to perceive the body as matter in motion. Training in Theater added dimensions of expressiveness and performative presence to the research. Contact with Gyrotonic deepened the understanding of flows, spirals, and internal alignments. Passing through Ballet Jovem Minas Gerais — where he also trained in Classical Ballet — brought technical versatility.',
+                trajectory_bio_2: 'The study of floorwork and the Piso Movil technique in Colombia, with Luisa Camacho, Xezar Garcia, Yenser Pinilla, and Ingrid Londoño, expanded the perception of the body and space as mobile matter. Residencies in MMS Techniques, Alexander Technique, Contact Improvisation, and Fight Monkey reinforced active listening and technical foundations. In Europe, experiences with Flying Low and floor techniques with Helder Seabra and Amarnah Ufuoma Cleopatra, experiences with Botis Seva and Far From The Norm, and Marcos Morau at GöteborgsOperans Danskompani, as well as stints with companies like Tanz Kassel, Theater Heidelberg, and Lenka Vagnarova & Company deepened the understanding of diverse physicalities. Residencies in Viewpoints and Suzuki Method, with Luciana Brandão and Bya Braga, opened new perspectives on spatial composition. Work with partnering — in residencies with Patricia Kuypers, Franck Beaubois, and Lali Ayguadé — consolidated the perception of the physical relation between bodies.',
+                trajectory_summary: 'All these experiences intertwine in BODY 360°.',
+                skill_capoeira: 'Capoeira',
+                skill_ballet: 'Classical Ballet',
+                skill_piso_movil: 'Piso Movil',
+                skill_flying_low: 'Flying Low',
+                skill_contato_impro: 'Contact Improvisation',
+                skill_suzuki: 'Suzuki Method',
+                skill_gyrotonic: 'Gyrotonic',
+                skill_viewpoints: 'Viewpoints',
+                skill_alexander: 'Alexander Technique',
+                skill_fight_monkey: 'Fight Monkey',
+                skill_partnering: 'Partnering',
+                target_subtitle: 'For whom',
+                target_text: 'For dancers, performers, actors, artists — and anyone who wishes to move with more truth.',
+                video_title: 'The Materialization',
+                video_hint: 'Click to hear and feel the movement',
+                video_fallback: 'Your browser does not support videos.',
+                footer_title: 'Interested in the workshop?',
+            },
+            es: {
+                hero_title: 'CUERPO<br>360°',
+                hero_subtitle: 'Metodología del movimiento',
+                manifesto_p1: 'CUERPO 360° es una metodología en desarrollo creada por un hombre trans. Esto no es un detalle — es el punto de partida.',
+                manifesto_p2: 'La técnica aquí no funciona como castigo. El esfuerzo es real, pero se aprovecha, no se desperdicia. El cuerpo no lucha contra la gravedad: <span class="font-extrabold uppercase">negocia con ella</span>. No domina el suelo: <span class="font-extrabold uppercase">entra en relación con él</span>. Estar en el suelo o de pie son expresiones de la misma unidad, no hay jerarquía entre los niveles.',
+                manifesto_p3: 'La creación comienza desde fuera. Del espacio que no está vacío. Del otro que no es un obstáculo. Del objeto que no es un accesorio. Del juego que no juzga. Antes de mirar hacia adentro, CUERPO 360° propone mirar hacia fuera y descubrir que la conciencia de sí nace del contacto con lo que no eres tú.',
+                manifesto_highlight_1: 'La inestabilidad no se corrige. <br><span class="olive-text">SE HABITA.</span>',
+                manifesto_highlight_2: 'El compañero no es soporte. <br><span class="olive-text">ES MATERIA VIVA.</span>',
+                manifesto_highlight_3: 'El espacio no está vacío. <span class="olive-text">SUPERFICIE de CONTACTO.</span>',
+                manifesto_footer: 'Esta inversión no es solo técnica. Es filosófica. Y lo cambia todo.',
+                workshop_subtitle: 'El Workshop',
+                workshop_title: 'Movimiento como estado permanente de relación.',
+                workshop_text: 'CUERPO 360° es un workshop para artistas del cuerpo que explora el movimiento como estado permanente de relación olaraky el movimiento como estado permanente de relación. A través de floorwork, improvisación, partnering y activación espacial, el cuerpo aprende que la inestabilidad no es un problema a resolver — es el lugar donde todo sucede. Cuando todo es materia, cuando todo es superficie de contacto, el suelo y el espacio se convierten en otro cuerpo en relación.',
+                trajectory_subtitle: 'Trayectoria y Síntesis',
+                trajectory_main_title: 'La síntesis de múltiples lenguajes.',
+                trajectory_bio_1: 'El workshop CUERPO 360° nace de la trayectoria del artista de la danza Heleno Carneiro. Desde la infancia, la práctica de la capoeira y las primeras clases de danzas contemporáneas en el proyecto sociocultural Quik Cidadania abrieron caminos para percibir el cuerpo como materia en movimiento. La formación en Teatro añadió a la investigación las dimensiones de la expresividad y de la presencia performativa. El contacto con Gyrotonic profundizó la comprensión de flujos, espirales y alinhamentos internos. El paso por Ballet Jovem Minas Gerais — donde también se formó en Ballet Clásico — aportó versatilidad técnica.',
+                trajectory_bio_2: 'El estudio de floorwork y de la técnica Piso Movil en Colombia, con Luisa Camacho, Xezar Garcia, Yenser Pinilla e Ingrid Londoño, expandió la percepción del cuerpo y del espacio como materias móviles. Residencias en Técnicas MMS, Técnica Alexander, Contact Improvisación y Fight Monkey reforzaron la escucha activa y los fundamentos técnicos. En Europa, experiencias con Flying Low y técnicas de suelo con Helder Seabra y Amarnah Ufuoma Cleopatra, vivencias con Botis Seva y Far From The Norm, y Marcos Morau en GöteborgsOperans Danskompani, además de pasos por compañías como Tanz Kassel, Theater Heidelberg y Lenka Vagnarova & Company profundizaron la comprensión de fisicalidades diversas. Residencias in Viewpoints y Método Suzuki, con Luciana Brandão y Bya Braga, abrieron perspectivas sobre composición espacial. El trabajo con partnering — em residências con Patricia Kuypers, Franck Beaubois y Lali Ayguadé — consolidó la percepción de la relación física entre cuerpos.',
+                trajectory_summary: 'Todas estas experiencias se entrelazan en CUERPO 360°.',
+                skill_capoeira: 'Capoeira',
+                skill_ballet: 'Ballet Clásico',
+                skill_piso_movil: 'Piso Movil',
+                skill_flying_low: 'Flying Low',
+                skill_contato_impro: 'Contacto Improvisación',
+                skill_suzuki: 'Método Suzuki',
+                skill_gyrotonic: 'Gyrotonic',
+                skill_viewpoints: 'Viewpoints',
+                skill_alexander: 'Técnica Alexander',
+                skill_fight_monkey: 'Fight Monkey',
+                skill_partnering: 'Partnering',
+                target_subtitle: 'Para quién',
+                target_text: 'Para bailarines, performers, actores, artistas — y cualquier persona que quiera moverse con más verdad.',
+                video_title: 'La Materialización',
+                video_hint: 'Haz clic para oír y sentir el movimiento',
+                video_fallback: 'Su navegador no soporta videos.',
+                footer_title: '¿Interesado en el workshop?',
+            }
+        };
+
+        function changeLanguage(lang) {
+            localStorage.setItem('preferredLang', lang);
+
+            document.querySelectorAll('.lang-option').forEach(opt => {
+                opt.classList.remove('active');
+                if (opt.id === `lang-${lang}`) opt.classList.add('active');
+            });
+
+            const translatableElements = document.querySelectorAll('[data-i18n]');
+            translatableElements.forEach(el => {
+                el.style.transition = 'opacity 0.3s ease';
+                el.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                translatableElements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    const translation = translations[lang][key];
+
+                    if (translation) {
+                        if (el.tagName === 'H1' || el.tagName === 'P' || el.tagName === 'DIV' || el.tagName === 'SPAN') {
+                            el.innerHTML = translation;
+                        } else {
+                            el.innerText = translation;
+                        }
+                        el.style.opacity = '1';
+                    }
+                });
+            }, 300);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferredLang') || 'pt';
+            changeLanguage(savedLang);
+        });
+
+        // Custom Cursor Implementation
+        const cursor = document.getElementById('cursor');
+
+
+        // Position update with requestAnimationFrame for smoothness
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            // Lerp (Linear Interpolation) for a slightly "lazy" and organic follow effect
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Hover effect for clickable elements
+        const clickables = document.querySelectorAll('a, button, .nav-tab, .gallery-item');
+        clickables.forEach(el => {
+            el.addEventListener('mouseover', () => cursor.classList.add('cursor-hover'));
+            el.addEventListener('mouseout', () => cursor.classList.remove('cursor-hover'));
+        });
+
+
+        // Click effect (Compression)
+        window.addEventListener('mousedown', () => cursor.classList.add('cursor-active'));
+        window.addEventListener('mouseup', () => cursor.classList.remove('cursor-active'));
+
+        // Main Video Logic
+        function playMainVideo() {
+            const video = document.getElementById('main-video');
+            const overlay = document.getElementById('video-overlay');
+
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 600);
+
+            video.play();
+        }
+
+        // Toggle Play/Pause on video click
+        document.getElementById('main-video').addEventListener('click', function() {
+            if (this.paused) {
+                this.play();
+            } else {
+                this.pause();
+            }
+        });
+
+        // Reset video and overlay when ended
+        document.getElementById('main-video').addEventListener('ended', () => {
+            const video = document.getElementById('main-video');
+            const overlay = document.getElementById('video-overlay');
+
+            video.currentTime = 0;
+            overlay.style.display = 'flex';
+            // Trigger a reflow to ensure the transition works
+            void overlay.offsetWidth;
+            overlay.style.opacity = '1';
+        });
+
+        // Background Particles Implementation
+        const container = document.getElementById('particles-container');
+        const particleCount = 15;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'bg-particle';
+
+            const size = Math.random() * 60 + 20; // 20px to 80px
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+
+            resetParticle(particle);
+            container.appendChild(particle);
+            animateParticle(particle);
+        }
+
+        function resetParticle(p) {
+            p.style.left = Math.random() * window.innerWidth + 'px';
+            p.style.top = Math.random() * window.innerHeight + 'px';
+            p.style.opacity = Math.random() * 0.3 + 0.1;
+        }
+
+        function animateParticle(p) {
+            const duration = Math.random() * 20000 + 10000; // 10s to 30s
+            const targetX = Math.random() * window.innerWidth;
+            const targetY = Math.random() * window.innerHeight;
+
+            p.animate([
+                { left: p.style.left, top: p.style.top },
+                { left: `${targetX}px`, top: `${targetY}px` }
+            ], {
+                duration: duration,
+                iterations: Infinity,
+                direction: 'alternate',
+                easing: 'linear'
+            });
+        }
+    </script>
+
+</body>
+</html>
