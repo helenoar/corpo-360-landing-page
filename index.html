@@ -472,10 +472,17 @@
                 </div>
                 <span data-i18n="video_hint" class="video-hint">Clique para ouvir e sentir o movimento</span>
             </div>
-            <video id="main-video" preload="auto" class="w-full h-full object-cover">
-                <source src="Referencias/Poleiro Cultural.mp4" type="video/mp4">
-                <span data-i18n="video_fallback">Seu navegador não suporta vídeos.</span>
-            </video>
+            <div id="youtube-player-container" class="hidden w-full h-full">
+                <iframe
+                    id="main-video"
+                    class="w-full h-full object-cover"
+                    src="https://www.youtube.com/embed/feqpKLSLH58?enablejsapi=1&autoplay=0&controls=0&rel=0&showinfo=0&modestbranding=1"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen>
+                </iframe>
+            </div>
         </div>
     </section>
 
@@ -710,37 +717,29 @@
 
         // Main Video Logic
         function playMainVideo() {
-            const video = document.getElementById('main-video');
             const overlay = document.getElementById('video-overlay');
+            const playerContainer = document.getElementById('youtube-player-container');
+            const iframe = document.getElementById('main-video');
 
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.display = 'none';
             }, 600);
 
-            video.play();
+            playerContainer.classList.remove('hidden');
+            // Força o autoplay ao atualizar o src com o parâmetro autoplay=1
+            const currentSrc = iframe.src;
+            if (!currentSrc.includes('autoplay=1')) {
+                iframe.src = currentSrc + '&autoplay=1';
+            }
         }
 
-        // Toggle Play/Pause on video click
-        document.getElementById('main-video').addEventListener('click', function() {
-            if (this.paused) {
-                this.play();
-            } else {
-                this.pause();
-            }
-        });
+        // YouTube handles its own click events inside the iframe.
+        // We don't need a custom click listener for play/pause anymore.
 
         // Reset video and overlay when ended
-        document.getElementById('main-video').addEventListener('ended', () => {
-            const video = document.getElementById('main-video');
-            const overlay = document.getElementById('video-overlay');
-
-            video.currentTime = 0;
-            overlay.style.display = 'flex';
-            // Trigger a reflow to ensure the transition works
-            void overlay.offsetWidth;
-            overlay.style.opacity = '1';
-        });
+        // Since it's a YouTube iframe, the 'ended' event requires the YouTube IFrame API.
+        // For this landing page, the video remains active after playing.
 
         // Background Particles Implementation
         const container = document.getElementById('particles-container');
